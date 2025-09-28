@@ -1,0 +1,3 @@
+ansh 23 30000.00 M
+yaman 34 50000.00 M
+amnachal 11 40000.00 F

@@ -1,0 +1,304 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+✅ We include libraries:
+
+stdio.h → for input/output (printf, scanf)
+
+stdlib.h → for general utilities (like dynamic memory, but not much used here)
+
+math.h → for math functions (sin, cos, log)
+
+c
+Copy
+Edit
+void basic_operations(FILE *file);
+void trigonometric_operations(FILE *file);
+void logarithmic_operation(FILE *file);
+void matrix_operations(FILE *file);
+✅ Function prototypes:
+We tell the compiler that these functions exist (definitions come later).
+
+c
+Copy
+Edit
+int main() {
+✅ Main program starts here.
+
+c
+Copy
+Edit
+    int choice;
+    FILE *file = fopen("calculator_results.txt", "a");
+✅ choice is for menu options.
+✅ We open a file called calculator_results.txt in append mode ("a") to save results.
+
+c
+Copy
+Edit
+    if (!file) {
+        printf("Error opening file!\n");
+        return 1;
+    }
+✅ If file opening fails, show an error and exit the program.
+
+c
+Copy
+Edit
+    do {
+✅ A do-while loop: It will keep running the menu until the user selects "Exit."
+
+c
+Copy
+Edit
+        printf("\n=== Calculator Menu ===\n");
+        printf("1. Basic (+, -, *, /)\n2. Trigonometry (sin, cos, tan)\n3. Logarithm (base 10)\n4. Matrix (Add, Multiply)\n5. Exit\n");
+        printf("Choose: ");
+        scanf("%d", &choice);
+✅ Show menu to the user and take input.
+
+c
+Copy
+Edit
+        switch (choice) {
+            case 1: basic_operations(file); break;
+            case 2: trigonometric_operations(file); break;
+            case 3: logarithmic_operation(file); break;
+            case 4: matrix_operations(file); break;
+            case 5: printf("Exiting...\n"); break;
+            default: printf("Invalid option!\n");
+        }
+    } while (choice != 5);
+✅ Based on user choice, call the correct function. ✅ If choice is 5, exit the loop.
+
+c
+Copy
+Edit
+    fclose(file);
+    return 0;
+}
+✅ Close the file when program ends.
+✅ Return 0 to show program ended successfully.
+
+🔵 BASIC OPERATIONS FUNCTION
+c
+Copy
+Edit
+void basic_operations(FILE *file) {
+    double a, b, result;
+    char op;
+✅ Declare two numbers (a, b), one result, and one operator (+, -, etc).
+
+c
+Copy
+Edit
+    printf("Enter (ex: 5 + 3): ");
+    scanf("%lf %c %lf", &a, &op, &b);
+✅ Ask user for two numbers and operator.
+
+c
+Copy
+Edit
+    if (op == '+') result = a + b;
+    else if (op == '-') result = a - b;
+    else if (op == '*') result = a * b;
+    else if (op == '/') {
+✅ Check which operator was entered, perform that calculation.
+
+c
+Copy
+Edit
+        if (b == 0) { printf("Error: divide by zero!\n"); return; }
+        result = a / b;
+✅ Special check: can't divide by zero — show error if attempted.
+
+c
+Copy
+Edit
+    } else { printf("Invalid operator!\n"); return; }
+✅ If operator is not one of + - * /, show error.
+
+c
+Copy
+Edit
+    printf("Result: %.2lf\n", result);
+    fprintf(file, "Basic: %.2lf %c %.2lf = %.2lf\n", a, op, b, result);
+}
+✅ Print and also save result to file.
+
+🔵 TRIGONOMETRIC FUNCTION
+c
+Copy
+Edit
+void trigonometric_operations(FILE *file) {
+    int choice;
+    double angle, result;
+✅ choice is 1,2,3 for sin, cos, tan.
+✅ angle is input, result is output.
+
+c
+Copy
+Edit
+    printf("1. sin 2. cos 3. tan\nChoose: ");
+    scanf("%d", &choice);
+    printf("Enter angle (degrees): ");
+    scanf("%lf", &angle);
+✅ Take which function (sin, cos, tan) and input angle.
+
+c
+Copy
+Edit
+    double rad = angle * M_PI / 180.0;
+✅ Convert degrees to radians, because C math functions use radians.
+
+c
+Copy
+Edit
+    if (choice == 1) result = sin(rad);
+    else if (choice == 2) result = cos(rad);
+    else if (choice == 3) result = tan(rad);
+    else { printf("Invalid!\n"); return; }
+✅ Calculate using correct function.
+
+c
+Copy
+Edit
+    printf("Result: %.4lf\n", result);
+    fprintf(file, "Trig: %.2lf -> %.4lf\n", angle, result);
+}
+✅ Show and save result.
+
+🔵 LOGARITHMIC FUNCTION
+c
+Copy
+Edit
+void logarithmic_operation(FILE *file) {
+    double num;
+    printf("Enter number: ");
+    scanf("%lf", &num);
+✅ Get number from user.
+
+c
+Copy
+Edit
+    if (num <= 0) {
+        printf("Error: log undefined for <= 0!\n");
+        return;
+    }
+✅ Check that number is positive.
+
+c
+Copy
+Edit
+    double result = log10(num);
+    printf("Result: %.4lf\n", result);
+    fprintf(file, "Log10(%.2lf) = %.4lf\n", num, result);
+}
+✅ Calculate base-10 log, show and save result.
+
+🔵 MATRIX OPERATIONS
+c
+Copy
+Edit
+void matrix_operations(FILE *file) {
+    int choice;
+    printf("1. Add\n2. Multiply\nChoose: ");
+    scanf("%d", &choice);
+✅ Choose matrix addition or multiplication.
+
+c
+Copy
+Edit
+    int r1, c1, r2, c2;
+    printf("Enter rows and columns of Matrix A: ");
+    scanf("%d%d", &r1, &c1);
+    printf("Enter rows and columns of Matrix B: ");
+    scanf("%d%d", &r2, &c2);
+✅ Take matrix sizes from user.
+
+c
+Copy
+Edit
+    if (choice == 1 && (r1 != r2 || c1 != c2)) {
+        printf("Error: Sizes must match for addition!\n");
+        return;
+    }
+    if (choice == 2 && (c1 != r2)) {
+        printf("Error: Columns of A must equal rows of B for multiplication!\n");
+        return;
+    }
+✅ Check size compatibility for matrix operations.
+
+c
+Copy
+Edit
+    int A[r1][c1], B[r2][c2], Result[r1][c2];
+✅ Declare 2 matrices (A, B) and a Result matrix.
+
+c
+Copy
+Edit
+    printf("Enter elements of Matrix A:\n");
+    for (int i = 0; i < r1; i++) for (int j = 0; j < c1; j++) scanf("%d", &A[i][j]);
+    printf("Enter elements of Matrix B:\n");
+    for (int i = 0; i < r2; i++) for (int j = 0; j < c2; j++) scanf("%d", &B[i][j]);
+✅ Take matrix elements from user.
+
+For Matrix Addition
+c
+Copy
+Edit
+    if (choice == 1) {
+        printf("Addition Result:\n");
+        fprintf(file, "Matrix Addition:\n");
+✅ Print header for addition.
+
+c
+Copy
+Edit
+        for (int i = 0; i < r1; i++) {
+            for (int j = 0; j < c1; j++) {
+                Result[i][j] = A[i][j] + B[i][j];
+                printf("%d ", Result[i][j]);
+                fprintf(file, "%d ", Result[i][j]);
+            }
+            printf("\n"); fprintf(file, "\n");
+        }
+    }
+✅ Add corresponding elements and print/save them.
+
+For Matrix Multiplication
+c
+Copy
+Edit
+    else if (choice == 2) {
+        printf("Multiplication Result:\n");
+        fprintf(file, "Matrix Multiplication:\n");
+        for (int i = 0; i < r1; i++)
+            for (int j = 0; j < c2; j++) {
+                Result[i][j] = 0;
+                for (int k = 0; k < c1; k++)
+                    Result[i][j] += A[i][k] * B[k][j];
+            }
+✅ Multiply matrices: row of A × column of B.
+
+c
+Copy
+Edit
+        for (int i = 0; i < r1; i++) {
+            for (int j = 0; j < c2; j++) {
+                printf("%d ", Result[i][j]);
+                fprintf(file, "%d ", Result[i][j]);
+            }
+            printf("\n"); fprintf(file, "\n");
+        }
+    }
+✅ Print and save multiplication result.
+
+c
+Copy
+Edit
+    else {
+        printf("Invalid choice!\n");
+    }
+}

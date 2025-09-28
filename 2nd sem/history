@@ -1,0 +1,23 @@
+case 6:
+                display_user_report(username);
+                break;
+                oid display_user_report(const char *user) {
+    FILE *file = fopen("calculator_results.txt", "r");
+    if (file == NULL) {
+        printf("Error opening results file.\n");
+        return;
+    }
+    char line[256];
+    printf("Calculation history for user: %s\n", username);
+    while (fgets(line, sizeof(line), file)) {
+        if (strstr(line, username) != NULL) {
+            printf("%s", line);
+        }
+    }
+    fclose(file);
+    void basic_operations(FILE *file);
+void trigonometric_operations(FILE *file);
+void logarithmic_operation(FILE *file);
+void matrix_operations(FILE *file);
+void print();
+int authenticate(FILE *file);
