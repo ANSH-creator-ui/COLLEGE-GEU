@@ -225,8 +225,7 @@ int main()
             scanf("%d", &key);
             Insert(rt, key);
             break;
-        case 9
-        :
+        case 9:
             printf("enter info u want to delete=");
             scanf("%d", &key);
             tree_type *n = deleteNode(rt, key);
